@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react'
-// import MolViewer from './MolViewer'
-import Graph from 'react-graph-vis'
-import options from './options'
-import graphData from './graphData'
+import React, { useState, useEffect, useRef } from 'react'
+import ForceGraph3d from 'react-force-graph-3d'
+import g from './graphData'
 
 const NODE_MAP = {
   'drug': { color: '#9349e3' }, 
@@ -71,23 +69,51 @@ const addNeighbors = (nodes, edges) => {
   return { nodes: relatedNodes, edges }
 }
 
+let nodes = []
+let links = []
+let gr = formatGraph(g)
+for (let node of gr.nodes) {
+  nodes.push({ id: node.id, name: node.title, value: node.label, color: node.color.background })
+}
+for (let edge of gr.edges) {
+  links.push({ source: edge.from, target: edge.to })
+}
+const graph = { nodes, links }
+
+// const graph = {
+//   nodes: [
+//     { id: 'id1', name: 'Node 1', val: Math.random().toFixed(3) },
+//     { id: 'id2', name: 'Node 2', val: Math.random().toFixed(3) },
+//     { id: 'id3', name: 'Node 3', val: Math.random().toFixed(3) },
+//     { id: 'id4', name: 'Node 4', val: Math.random().toFixed(3) },
+//     { id: 'id5', name: 'Node 5', val: Math.random().toFixed(3) },
+//     { id: 'id6', name: 'Node 6', val: Math.random().toFixed(3) },
+//   ],
+//   links: [
+//     { source: 'id1', target: 'id2' },
+//     { source: 'id1', target: 'id5' },
+//     { source: 'id1', target: 'id6' },
+//     { source: 'id4', target: 'id3' },
+//     { source: 'id2', target: 'id4' },
+//     { source: 'id2', target: 'id5' },
+//     { source: 'id5', target: 'id3' },
+//   ]
+// }
 
 function App() {
-  const [data, setData] = useState(formatGraph(graphData))
-  const [stabilized, setStab] = useState(false)
+  const graphRef = useRef()
 
-  // useEffect(_ => {
-  //   setTimeout(_ => {
-  //     setStab(true)
-  //   }, 20000)
-  // }, [])
+  useEffect(_ => {
+  }, [])
 
   return (
     <div style={{ width: '90vw', height: '90vh' }}>
-      <Graph 
-        graph={data}
-        options={stabilized ? {...options, physics: { enabled: false }} : options}
-        events={{}}
+      <ForceGraph3d 
+        graphData={graph}
+        backgroundColor='#0000'
+        nodeColor='color'
+        // linkCurvature={.3}
+        // linkDirectionalParticles={5}
       />
     </div>
   )
